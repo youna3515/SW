@@ -12,12 +12,12 @@ pipeline {
                 // 필요한 JUnit 및 API Guardian 라이브러리 다운로드
                 sh '''
                     mkdir -p lib
+                    curl -L -o lib/apiguardian-api-1.1.0.jar https://repo1.maven.org/maven2/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar
                     curl -L -o lib/junit-jupiter-api-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar
                     curl -L -o lib/junit-jupiter-engine-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar
-                    curl -L -o lib/junit-platform-engine-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0.jar
-                    curl -L -o lib/junit-platform-console-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console/1.7.0/junit-platform-console-1.7.0.jar
                     curl -L -o lib/junit-platform-commons-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.7.0/junit-platform-commons-1.7.0.jar
-                    curl -L -o lib/apiguardian-api-1.1.0.jar https://repo1.maven.org/maven2/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar
+                    curl -L -o lib/junit-platform-console-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console/1.7.0/junit-platform-console-1.7.0.jar
+                    curl -L -o lib/junit-platform-engine-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0.jar
                 '''
             }
         }
@@ -26,7 +26,7 @@ pipeline {
                 // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
                 sh '''
                     find Book/src -name "*.java" > sources.txt
-                    javac -encoding UTF-8 -cp lib/* -d classes @sources.txt
+                    javac -encoding UTF-8 -cp lib/apiguardian-api-1.1.0.jar:lib/junit-jupiter-api-5.7.0.jar:lib/junit-jupiter-engine-5.7.0.jar:lib/junit-platform-commons-1.7.0.jar:lib/junit-platform-console-1.7.0.jar:lib/junit-platform-engine-1.7.0.jar -d classes @sources.txt
                 '''
             }
         }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // JUnit 5 테스트 실행을 위한 classpath 설정
-                    def classpath = "classes:lib/*"
+                    def classpath = "classes:lib/apiguardian-api-1.1.0.jar:lib/junit-jupiter-api-5.7.0.jar:lib/junit-jupiter-engine-5.7.0.jar:lib/junit-platform-commons-1.7.0.jar:lib/junit-platform-console-1.7.0.jar:lib/junit-platform-engine-1.7.0.jar"
                     // JUnit 5 테스트 실행
                     sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
