@@ -37,7 +37,8 @@ pipeline {
                     // JUnit 5 테스트 실행을 위한 classpath 설정
                     def classpath = "classes:lib/apiguardian-api-1.1.0.jar:lib/junit-jupiter-api-5.7.0.jar:lib/junit-jupiter-engine-5.7.0.jar:lib/junit-platform-commons-1.7.0.jar:lib/junit-platform-console-1.7.0.jar:lib/junit-platform-engine-1.7.0.jar:lib/junit-platform-launcher-1.7.0.jar"
                     // JUnit 5 테스트 실행
-                    sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                    sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt 2>&1"
+                    sh "cat test_results.txt"  // 테스트 결과를 콘솔에 출력
                 }
             }
         }
