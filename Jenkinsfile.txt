@@ -1,6 +1,5 @@
 pipeline {
     agent any
-  
     stages {
         stage('Checkout') {
             steps {
@@ -8,33 +7,32 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Setup') {
+            steps {
+                // JUnit 라이브러리 다운로드
+                bat '''
+                    mkdir lib
+                    curl -L -o lib/junit-jupiter-api-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar
+                    curl -L -o lib/junit-jupiter-engine-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar
+                    curl -L -o lib/junit-platform-console-standalone-1.7.1.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.1/junit-platform-console-standalone-1.7.1.jar
+                '''
+            }
+        }
         stage('Build') {
             steps {
-                script {
-                    // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
-                    // Windows 일 경우 bat, Unix 계열 OS일 경우 sh
-                    if (isUnix()) {
-                        sh 'javac -encoding UTF-8 -d classes -cp lib/junit-platform-console-standalone-1.7.1.jar Book/src/*.java'
-                    } else {
-                        bat 'javac -encoding UTF-8 -d classes -cp lib\\junit-platform-console-standalone-1.7.1.jar Book\\src\\*.java'
-                    }
-                }
+                // 모든 Java 파일을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
+                bat '''
+                    javac -encoding UTF-8 -cp lib/* -d classes SWTrialProject/src/*.java
+                '''
             }
         }
         stage('Test') {
             steps {
                 script {
                     // JUnit 5 테스트 실행을 위한 classpath 설정
-                    def classpath = "classes:lib/junit-platform-console-standalone-1.7.1.jar"
-                    if (!isUnix()) {
-                        classpath = "classes;lib\\junit-platform-console-standalone-1.7.1.jar"
-                    }
+                    def classpath = "classes;lib/*"
                     // JUnit 5 테스트 실행
-                    if (isUnix()) {
-                        sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
-                    } else {
-                        bat "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
-                    }
+                    bat "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath --include-classname=.* > test_results.txt"
                 }
             }
         }
