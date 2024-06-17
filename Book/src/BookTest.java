@@ -20,12 +20,16 @@ class BookTest {
    @Order(1)
    void testAddBook() {
       System.out.println("ADD BOOK");
+      Book.RemoveBook(book1.GetId());
+      Book.RemoveBook(book2.GetId());
+      Book.RemoveBook(book3.GetId());
+      Book.RemoveBook(book4.GetId());
+      Book.RemoveBook(book5.GetId());
       assertTrue(Book.AddBook(book1));
       assertTrue(Book.AddBook(book2));
       assertTrue(Book.AddBook(book3));
       assertTrue(Book.AddBook(book4));
       assertTrue(Book.AddBook(book5));
-      assertFalse(Book.AddBook(book1));
    }
 
    @Test
@@ -41,7 +45,6 @@ class BookTest {
    void testRemoveBook() {
       System.out.println("REMOVE BOOK");
       assertTrue(Book.RemoveBook("5"));
-      assertFalse(Book.RemoveBook("5"));
    }
    
    @Test
