@@ -42,7 +42,10 @@ pipeline {
         stage('Performance Test') {
             steps {
                 script {
+                    // 성능 테스트 결과 디렉토리 생성
+                    sh "mkdir -p performance_results"
                     // 성능 테스트 실행
+                    def classpath = "classes:lib/*"
                     sh "java -cp ${classpath} PerformanceTest > performance_results/performance_test_results.txt"
                 }
             }
