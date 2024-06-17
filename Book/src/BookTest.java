@@ -4,12 +4,17 @@ import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BookTest {
+	
+   Book book1, book2, book3, book4, book5;
    
-   Book book1 = new Book("1", "자바기초", "Jane", 2021);
-   Book book2 = new Book("2", "자바심화", "John", 2022);
-   Book book3 = new Book("3", "자바고급", "Doe", 2024);
-   Book book4 = new Book("4", "파이썬기초", "Mary", 2023);
-   Book book5 = new Book("5", "러스트기초", "Albert", 2020);
+   @BeforeEach
+   void setUp() {
+	   book1 = new Book("1", "자바기초", "Jane", 2021);
+	   book2 = new Book("2", "자바심화", "John", 2022);
+	   book3 = new Book("3", "자바고급", "Doe", 2024);
+	   book4 = new Book("4", "파이썬기초", "Mary", 2023);
+	   book5 = new Book("5", "러스트기초", "Albert", 2020);
+   }
    
    @Test
    @Order(1)
