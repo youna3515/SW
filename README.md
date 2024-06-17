@@ -1,4 +1,4 @@
-##소프트웨어 공학 Mission 2
+## 소프트웨어 공학 Mission 2
 
 팀장: 신유나(C011107)
 
@@ -22,13 +22,18 @@
 ## 오류
 ### Github 에러
 1. 병합 충돌 오류
+   
+![image](https://github.com/youna3515/SW/assets/87520237/8a1002e9-c43e-4c63-abcf-639a96fb3405)
+
 
 [원인] 원격 저장소의 branch로부터 로컬 branch를 새로 생성한뒤 Fetch하여, main이 Source로 지정되지 않음.
 
 [해결 방안] 원격 저장소의 branch로 checkout 후 수정 및 Fetch함.
 
 2.Pull 실패
+
 ![image](https://github.com/youna3515/SW/assets/87520237/29c203b2-0716-4af8-8353-beb3fda81b99)
+
 ![image](https://github.com/youna3515/SW/assets/87520237/8ca55fb9-646e-495b-95ca-181d164542fb)
 
 
