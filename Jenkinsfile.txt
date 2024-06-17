@@ -3,33 +3,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // 소스 코드 체크아웃
+                // 소스코드 체크아웃
                 checkout scm
             }
         }
         stage('Setup') {
             steps {
-                // 필요한 JUnit 및 API Guardian 라이브러리 다운로드
-                sh '''
-                    mkdir -p lib
-                    curl -L -o lib/apiguardian-api-1.1.0.jar https://repo1.maven.org/maven2/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar
+                // JUnit 라이브러리 다운로드
+                bat '''
+                    mkdir lib
                     curl -L -o lib/junit-jupiter-api-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar
                     curl -L -o lib/junit-jupiter-engine-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar
-                    curl -L -o lib/junit-platform-commons-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.7.0/junit-platform-commons-1.7.0.jar
-                    curl -L -o lib/junit-platform-console-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console/1.7.0/junit-platform-console-1.7.0.jar
-                    curl -L -o lib/junit-platform-engine-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0.jar
-                    curl -L -o lib/junit-platform-launcher-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/1.7.0/junit-platform-launcher-1.7.0.jar
-                    curl -L -o lib/junit-platform-reporting-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/1.7.0/junit-platform-reporting-1.7.0.jar
-                    curl -L -o lib/opentest4j-1.2.0.jar https://repo1.maven.org/maven2/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar
+                    curl -L -o lib/junit-platform-console-standalone-1.7.1.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.1/junit-platform-console-standalone-1.7.1.jar
                 '''
             }
         }
         stage('Build') {
             steps {
                 // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
-                sh '''
-                    find Book/src -name "*.java" > sources.txt
-                    javac -encoding UTF-8 -cp "lib/*" -d classes @sources.txt
+                bat '''
+                    for /r %%i in (*.java) do (
+                        javac -encoding UTF-8 -cp lib/* -d classes %%i
+                    )
                 '''
             }
         }
@@ -37,11 +32,9 @@ pipeline {
             steps {
                 script {
                     // JUnit 5 테스트 실행을 위한 classpath 설정
-                    def classpath = "classes:lib/*"
+                    def classpath = "classes;lib/*"
                     // JUnit 5 테스트 실행
-                    sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt 2>&1"
-                    // 테스트 결과를 콘솔에 출력
-                    sh "cat test_results.txt"
+                    bat "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
             }
         }
