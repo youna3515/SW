@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PerformanceTest {
 
-	 Book book1 = new Books("1", "자바기초", "Jane", 2021);
+	 Book book1 = new Book("1", "자바기초", "Jane", 2021);
 	 Book book2 = new Book("2", "자바심화", "John", 2022);
 	 Book book3 = new Book("3", "자바고급", "Doe", 2024);
 	 Book book4 = new Book("4", "파이썬기초", "Mary", 2023);
